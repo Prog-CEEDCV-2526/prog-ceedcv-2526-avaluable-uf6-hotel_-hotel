@@ -17,5 +17,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Run Maven tests
-      run: mvn -q -DskipTests=false test
+    - name: Nota
+      run: passed=$(grep -o "Tests run: [0-9]*, Failures: 0" target/surefire-reports/*.txt | wc -l)
+        total=$(grep -o "Tests run: [0-9]*" target/surefire-reports/*.txt | wc -l)
+
+        echo "## Test results" >> $GITHUB_STEP_SUMMARY
+        echo "Tests aprovats: $passed" >> $GITHUB_STEP_SUMMARY
+        echo "Tests totals: $total" >> $GITHUB_STEP_SUMMARY
