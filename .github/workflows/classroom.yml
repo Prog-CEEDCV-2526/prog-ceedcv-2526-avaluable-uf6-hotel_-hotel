@@ -25,6 +25,8 @@ jobs:
       with:
         name: surefire-reports
         path: target/surefire-reports/*.txt
-
-
+        
+    - name: Nota
+      run: | 
+        echo "Estoy escribiendo desde el Assignment"
    
