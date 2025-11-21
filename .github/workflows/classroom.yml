@@ -22,13 +22,19 @@ jobs:
 
     - name: Nota
       run: |
-        passed=$(grep -o "Tests run: [0-9]*, Failures: 0" target/surefire-reports/*.txt | wc -l)
-        total=$(grep -o "Tests run: [0-9]*" target/surefire-reports/*.txt | wc -l)
+        echo "## RESULTATS DE TESTOS" | tee -a $GITHUB_STEP_SUMMARY
 
+        total=$(grep -h "Tests run:" target/surefire-reports/*.txt | awk '{print $3}' | cut -d',' -f1 | paste -sd+ - | bc)
+        failures=$(grep -h "Failures:" target/surefire-reports/*.txt | awk '{print $5}' | cut -d',' -f1 | paste -sd+ - | bc)
+        errors=$(grep -h "Errors:" target/surefire-reports/*.txt | awk '{print $7}' | cut -d',' -f1 | paste -sd+ - | bc)
+
+        passed=$((total - failures - errors))
         nota=$(awk "BEGIN {printf \"%.2f\", ($passed / $total) * 10}")
 
-        echo "## RESULTATS DE TESTOS" | tee -a $GITHUB_STEP_SUMMARY
         echo "Tests aprovats: $passed" | tee -a $GITHUB_STEP_SUMMARY
         echo "Tests totals: $total" | tee -a $GITHUB_STEP_SUMMARY
-        echo "Nota sobre 10: $nota" | tee -a $GITHUB_STEP_SUMMARY
+        echo "Fallos: $failures" | tee -a $GITHUB_STEP_SUMMARY
+        echo "Errors: $errors" | tee -a $GITHUB_STEP_SUMMARY
+        echo "" | tee -a $GITHUB_STEP_SUMMARY
+        echo "### Nota sobre 10: **$nota**" | tee -a $GITHUB_STEP_SUMMARY
 
