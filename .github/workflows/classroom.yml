@@ -18,9 +18,13 @@ jobs:
         distribution: 'temurin'
 
     - name: Nota
-      run: passed=$(grep -o "Tests run: [0-9]*, Failures: 0" target/surefire-reports/*.txt | wc -l)
-        total=$(grep -o "Tests run: [0-9]*" target/surefire-reports/*.txt | wc -l)
+      run: |
+    passed=$(grep -o "Tests run: [0-9]*, Failures: 0" target/surefire-reports/*.txt | wc -l)
+    total=$(grep -o "Tests run: [0-9]*" target/surefire-reports/*.txt | wc -l)
 
-        echo "## Test results" >> $GITHUB_STEP_SUMMARY
-        echo "Tests aprovats: $passed" >> $GITHUB_STEP_SUMMARY
-        echo "Tests totals: $total" >> $GITHUB_STEP_SUMMARY
+    nota=$(awk "BEGIN {printf \"%.2f\", ($passed / $total) * 10}")
+
+    echo "## RESULTATS DE TESTOS"           | tee -a $GITHUB_STEP_SUMMARY
+    echo "Tests aprovats: $passed"          | tee -a $GITHUB_STEP_SUMMARY
+    echo "Tests totals: $total"             | tee -a $GITHUB_STEP_SUMMARY
+    echo "Nota sobre 10: $nota"             | tee -a $GITHUB_STEP_SUMMARY
